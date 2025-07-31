@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { GuideDB, DatabaseUtils } from '@/lib/database';
-import { GuideProfile } from '@/lib/database/types';
+import { SupabaseGuideDB, SupabaseReviewDB, SupabaseDatabaseUtils } from '../../../lib/database/supabase';
+import { Guide } from '../../../types';
 
 export default function DatabaseAdmin() {
-  const [guides, setGuides] = useState<GuideProfile[]>([]);
+  const [guides, setGuides] = useState<Guide[]>([]);
   const [stats, setStats] = useState<{
     totalGuides: number;
     totalReviews: number;
@@ -15,9 +15,10 @@ export default function DatabaseAdmin() {
     totalGuides: 0,
     totalReviews: 0,
     totalBookings: 0,
-    lastUpdated: ''
+    lastUpdated: new Date().toISOString()
   });
   const [loading, setLoading] = useState(true);
+  const [connectionStatus, setConnectionStatus] = useState<'connected' | 'disconnected' | 'connecting'>('connecting');
 
   useEffect(() => {
     loadData();
@@ -25,34 +26,59 @@ export default function DatabaseAdmin() {
 
   const loadData = async () => {
     setLoading(true);
+    setConnectionStatus('connecting');
     try {
-      const guidesResult = await GuideDB.getAllGuides();
+      // Test database connection
+      await SupabaseDatabaseUtils.initializeTables();
+      setConnectionStatus('connected');
+      
+      // Load guides from Supabase
+      const guidesResult = await SupabaseGuideDB.getAllGuides();
       if (guidesResult.success && guidesResult.data) {
         setGuides(guidesResult.data);
       }
       
-      const dbStats = DatabaseUtils.getStats();
-      setStats(dbStats);
+      // Get database stats from Supabase
+      const dbStats = await SupabaseDatabaseUtils.getStats();
+      setStats({
+        ...dbStats,
+        totalBookings: 0, // Not implemented yet
+        lastUpdated: new Date().toISOString()
+      });
     } catch (error) {
       console.error('Error loading data:', error);
+      setConnectionStatus('disconnected');
     }
     setLoading(false);
   };
 
-  const clearDatabase = () => {
-    if (confirm('Are you sure you want to clear all database data?')) {
-      DatabaseUtils.clearDatabase();
-      loadData();
+  const clearDatabase = async () => {
+    if (confirm('Are you sure you want to clear all guides from the database? This action cannot be undone!')) {
+      try {
+        // Delete all guides one by one (Supabase doesn't have a clear all function)
+        for (const guide of guides) {
+          await SupabaseGuideDB.deleteGuide(guide.id);
+        }
+        alert('Database cleared successfully!');
+        loadData();
+      } catch (error) {
+        console.error('Error clearing database:', error);
+        alert('Failed to clear database');
+      }
     }
   };
 
   const exportData = () => {
-    const data = DatabaseUtils.exportDatabase();
+    const data = {
+      guides: guides,
+      stats: stats,
+      exportDate: new Date().toISOString()
+    };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `guide-database-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `supabase-guide-database-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -75,7 +101,19 @@ export default function DatabaseAdmin() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-4">Database Administration</h1>
+          <div className="flex justify-between items-center mb-4">
+            <h1 className="text-3xl font-bold text-gray-900">Database Administration</h1>
+            <div className="flex items-center space-x-2">
+              <div className={`w-3 h-3 rounded-full ${
+                connectionStatus === 'connected' ? 'bg-green-500' : 
+                connectionStatus === 'connecting' ? 'bg-yellow-500 animate-pulse' : 'bg-red-500'
+              }`}></div>
+              <span className="text-sm font-medium">
+                Supabase {connectionStatus === 'connected' ? 'Connected' : 
+                connectionStatus === 'connecting' ? 'Connecting...' : 'Disconnected'}
+              </span>
+            </div>
+          </div>
           
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
@@ -156,7 +194,7 @@ export default function DatabaseAdmin() {
                         </span>
                       </td>
                       <td className="px-4 py-2 text-sm text-gray-600">
-                        {new Date(guide.createdAt).toLocaleDateString()}
+                        N/A
                       </td>
                     </tr>
                   ))}

@@ -8,9 +8,15 @@ export default function Hero() {
 
   return (
     <section className="relative text-white min-h-screen">
-      {/* Background with enhanced transparency for animated background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-600/70 to-teal-500/70">
-        <div className="absolute inset-0 bg-black/20"></div>
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: 'url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80")'
+        }}
+      >
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-black/40"></div>
       </div>
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">

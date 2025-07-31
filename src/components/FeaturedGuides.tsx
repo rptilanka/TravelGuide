@@ -1,4 +1,8 @@
-// import { sampleGuides } from '@/data/sampleData';
+'use client';
+
+import { useState, useEffect } from 'react';
+import { SupabaseGuideDB } from '@/lib/database/supabase';
+import { Guide } from '@/types';
 import GuideCard from './GuideCard';
 import Link from 'next/link';
 

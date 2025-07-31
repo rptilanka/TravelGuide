@@ -2,6 +2,37 @@
 
 A modern web application that connects travelers with verified local guides for authentic travel experiences. Built with Next.js, TypeScript, and Tailwind CSS.
 
+## Project Status
+
+✅ **Clean & Optimized**: This project has been cleaned up with:
+- Removed dummy images (using default avatar)
+- Removed duplicate routes (/signin removed, kept /login)
+- Removed demo pages (typewriter-demo)
+- Removed unused components and assets
+- Clean App Router structure
+- Optimized file organization
+
+🔄 **Database Migration**: Successfully migrated from localStorage to Supabase:
+- ✅ Real Supabase database integration
+- ✅ Dynamic data loading from cloud database
+- ✅ No more mock/sample data dependencies
+- ✅ Live guide signup and listing functionality
+- ✅ PostgreSQL with proper schema and triggers
+
+## Quick Start
+
+1. **Setup Database**: Follow instructions in `SUPABASE_SETUP.md`
+2. **Install Dependencies**: `npm install`
+3. **Run Development Server**: `npm run dev`
+4. **Visit Application**: `http://localhost:3000` (or assigned port)
+
+## Database
+
+- **Platform**: Supabase (PostgreSQL)
+- **URL**: Configured in `.env` file
+- **Schema**: Guides and Reviews tables with automated triggers
+- **Features**: Real-time data, auto-updating ratings, proper relationships
+
 ## Features
 
 - **Guide Discovery**: Browse and search for local guides by location, language, and specializations

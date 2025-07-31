@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import { Guide, SearchFilters } from '@/types';
 import GuideCard from '@/components/GuideCard';
 import Link from 'next/link';
-import { GuideDB } from '@/lib/database';
-import { initializeDatabase, addSampleGuidesIfNeeded, checkDatabaseStatus } from '@/lib/database/init';
+import { SupabaseGuideDB, SupabaseDatabaseUtils } from '@/lib/database/supabase';
 
 // Static data for filters
 const locations = [
@@ -40,41 +39,18 @@ export default function GuidesPage() {
   // Load guides from database
   useEffect(() => {
     const loadGuides = async () => {
+      setIsLoading(true);
       try {
-        // Check if database needs initialization
-        const dbStatus = checkDatabaseStatus();
-        if (dbStatus.needsInitialization) {
-          console.log('Database empty, initializing with sample data...');
-          await initializeDatabase();
-        } else if (dbStatus.stats.totalGuides < 10) {
-          console.log('Few guides detected, adding sample guides if needed...');
-          await addSampleGuidesIfNeeded();
-        }
+        // Initialize database tables if needed
+        await SupabaseDatabaseUtils.initializeTables();
         
-        // Load guides from database
-        const result = await GuideDB.getAllGuides();
+        // Load guides from Supabase database
+        const result = await SupabaseGuideDB.getAllGuides();
         
         if (result.success && result.data) {
-          // Convert database guide profiles to Guide format for display
-          const convertedGuides: Guide[] = result.data.map((profile) => ({
-            id: profile.id,
-            name: profile.name,
-            photo: profile.profilePhoto,
-            rating: profile.rating,
-            reviewCount: profile.reviewCount,
-            languages: profile.languages,
-            specializations: profile.specializations,
-            location: profile.location,
-            pricePerHour: profile.pricePerHour,
-            experience: profile.experience,
-            description: profile.description,
-            availability: profile.availability,
-            verified: profile.verified
-          }));
-
-          setGuides(convertedGuides);
-          setFilteredGuides(convertedGuides);
-          console.log(`Loaded ${convertedGuides.length} guides from database`);
+          setGuides(result.data);
+          setFilteredGuides(result.data);
+          console.log(`Loaded ${result.data.length} guides from Supabase database`);
         } else {
           console.error('Failed to load guides:', result.error);
           setGuides([]);
@@ -84,6 +60,8 @@ export default function GuidesPage() {
         console.error('Error loading guides:', error);
         setGuides([]);
         setFilteredGuides([]);
+      } finally {
+        setIsLoading(false);
       }
     };
 

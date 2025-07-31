@@ -4,113 +4,92 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-
-interface GuideProfile {
-  id: string;
-  name: string;
-  email: string;
-  city: string;
-  country: string;
-  languages: string[];
-  specializations: string[];
-  experience: number;
-  pricePerHour: number;
-  description: string;
-  profilePhoto: string;
-  rating: number;
-  reviewCount: number;
-  verified: boolean;
-  availability: boolean;
-  joinDate: string;
-  totalTours: number;
-  responseTime: string;
-  gallery: string[];
-  certifications: string[];
-  achievements: string[];
-}
-
-interface Review {
-  id: string;
-  userName: string;
-  rating: number;
-  comment: string;
-  date: string;
-  trip: string;
-  userPhoto?: string;
-}
+import { SupabaseGuideDB, SupabaseReviewDB } from '@/lib/database/supabase';
+import { Guide, Review } from '@/types';
 
 export default function GuideProfilePage() {
   const params = useParams();
   const router = useRouter();
-  const [guide, setGuide] = useState<GuideProfile | null>(null);
-  const [reviews] = useState<Review[]>([
-    {
-      id: '1',
-      userName: 'Emma Johnson',
-      rating: 5,
-      comment: 'Alex was an incredible guide! His knowledge of Sri Lankan culture and history brought every location to life. The temple tour was absolutely magical.',
-      date: '2025-07-10',
-      trip: 'Cultural Temple Tour',
-      userPhoto: 'https://images.unsplash.com/photo-1494790108755-2616b612b820?w=100&h=100&fit=crop&crop=face'
-    },
-    {
-      id: '2',
-      userName: 'Michael Chen',
-      rating: 5,
-      comment: 'Amazing food tour! Alex knew all the best local spots that tourists never find. The authentic flavors and stories made this unforgettable.',
-      date: '2025-07-05',
-      trip: 'Authentic Food Tour',
-      userPhoto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face'
-    },
-    {
-      id: '3',
-      userName: 'Sarah Williams',
-      rating: 4,
-      comment: 'Great historical tour through Colombo. Alex is very knowledgeable and passionate about his city. Would definitely book again!',
-      date: '2025-06-28',
-      trip: 'Colombo Historical Tour',
-      userPhoto: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face'
-    }
-  ]);
+  const [guide, setGuide] = useState<Guide | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState('');
   const [tourDuration, setTourDuration] = useState(4);
   const [tourType, setTourType] = useState('');
   const [isBooking, setIsBooking] = useState(false);
 
   useEffect(() => {
-    // Create a demo guide profile (in real app, this would fetch from API)
-    const demoGuide: GuideProfile = {
-      id: params.id as string,
-      name: 'Alex Thompson',
-      email: 'alex@example.com',
-      city: 'Colombo',
-      country: 'Sri Lanka',
-      languages: ['English', 'Sinhala', 'Tamil'],
-      specializations: ['Cultural Tours', 'Historical Tours', 'Food Tours', 'Temple Tours'],
-      experience: 5,
-      pricePerHour: 40,
-      description: 'Welcome to Sri Lanka! I\'m Alex, a passionate local guide with over 5 years of experience sharing the beauty and culture of my homeland. Born and raised in Colombo, I have deep knowledge of our rich history, vibrant culture, and hidden gems that most tourists never discover.\n\nI specialize in cultural and historical tours, taking you through ancient temples, colonial architecture, bustling markets, and authentic local eateries. My goal is to provide you with an authentic Sri Lankan experience that goes beyond typical tourist attractions.\n\nI speak fluent English, Sinhala, and Tamil, ensuring smooth communication throughout your journey. Whether you\'re interested in learning about Buddhism, tasting traditional cuisine, or exploring our colonial heritage, I\'ll customize the tour to match your interests and pace.',
-      profilePhoto: '/images/guides/alex-thompson.svg',
-      rating: 4.8,
-      reviewCount: 24,
-      verified: true,
-      availability: true,
-      joinDate: '2024-01-15',
-      totalTours: 67,
-      responseTime: '< 2 hours',
-      gallery: [
-        'https://images.unsplash.com/photo-1552928474-e1bfc2e96e9c?w=400&h=300&fit=crop',
-        'https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop',
-        'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop',
-        'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=400&h=300&fit=crop',
-        'https://images.unsplash.com/photo-1539650116574-75c0c6d73c0e?w=400&h=300&fit=crop',
-        'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=300&fit=crop'
-      ],
-      certifications: ['Sri Lanka Tourism Board Certified', 'First Aid Certified', 'Cultural Heritage Specialist'],
-      achievements: ['Top Rated Guide 2024', '50+ Tours Completed', 'Excellent Review Score', 'Cultural Expert']
+    const loadGuideData = async () => {
+      const guideId = params.id as string;
+      
+      try {
+        setLoading(true);
+        
+        // Fetch guide data
+        const guideResult = await SupabaseGuideDB.getGuideById(guideId);
+        if (guideResult.success && guideResult.data) {
+          setGuide(guideResult.data);
+        } else {
+          setError('Guide not found');
+          return;
+        }
+        
+        // Fetch reviews
+        const reviewsResult = await SupabaseReviewDB.getReviewsByGuideId(guideId);
+        if (reviewsResult.success && reviewsResult.data) {
+          // Convert Supabase reviews to app format
+          const convertedReviews: Review[] = reviewsResult.data.map((review: any) => ({
+            id: review.id,
+            guideId: review.guide_id,
+            userName: review.reviewer_name,
+            rating: review.rating,
+            comment: review.comment,
+            date: new Date(review.created_at).toLocaleDateString(),
+            trip: 'Tour Experience' // Default value since we don't store this
+          }));
+          setReviews(convertedReviews);
+        }
+      } catch (err: any) {
+        console.error('Error loading guide data:', err);
+        setError('Failed to load guide data');
+      } finally {
+        setLoading(false);
+      }
     };
-    setGuide(demoGuide);
+
+    if (params.id) {
+      loadGuideData();
+    }
   }, [params.id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading guide details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !guide) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Guide Not Found</h1>
+          <p className="text-gray-600 mb-8">{error || 'The guide you are looking for does not exist.'}</p>
+          <Link 
+            href="/guides" 
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Back to Guides
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   const handleBooking = () => {
     if (!selectedDate || !tourType) {
@@ -149,7 +128,7 @@ export default function GuideProfilePage() {
             <div className="absolute inset-0 bg-black/20"></div>
             <div className="absolute bottom-6 left-6 text-white">
               <h1 className="text-3xl font-bold">{guide.name}</h1>
-              <p className="text-blue-100">{guide.city}, {guide.country}</p>
+              <p className="text-blue-100">{guide.location}</p>
               <div className="flex items-center mt-2">
                 <div className="flex text-yellow-400">
                   {[...Array(5)].map((_, i) => (
@@ -173,9 +152,9 @@ export default function GuideProfilePage() {
             {/* Profile Photo */}
             <div className="absolute -top-20 left-6">
               <div className="w-40 h-40 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-200">
-                {guide.profilePhoto ? (
+                {guide.photo ? (
                   <Image
-                    src={guide.profilePhoto}
+                    src={guide.photo}
                     alt={guide.name}
                     width={160}
                     height={160}

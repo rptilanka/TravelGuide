@@ -1,6 +1,8 @@
 export interface Guide {
   id: string;
   name: string;
+  email?: string;
+  phone?: string;
   photo?: string;
   rating: number;
   reviewCount: number;
@@ -18,11 +20,12 @@ export interface Review {
   id: string;
   guideId: string;
   userName: string;
+  reviewerName?: string;
   userPhoto?: string;
   rating: number;
   comment: string;
   date: string;
-  trip: string;
+  trip?: string;
 }
 
 export interface BookingRequest {

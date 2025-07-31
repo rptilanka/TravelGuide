@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { GuideDB } from '@/lib/database';
+import { SupabaseGuideDB } from '@/lib/database/supabase';
 
 interface GuideSignupForm {
   // Personal Information
@@ -142,7 +142,7 @@ export default function GuideSignupPage() {
     setTimeout(async () => {
       try {
         // Create guide profile in database
-        const result = await GuideDB.createGuide(guideData);
+        const result = await SupabaseGuideDB.createGuide(guideData);
         
         setIsLoading(false);
         
