@@ -147,18 +147,25 @@ export default function GuideSignupPage() {
         setIsLoading(false);
         
         if (result.success && result.data) {
+          const guide = result.data;
+          
           // Save to pending for profile setup (optional enhancement step)
           localStorage.setItem('pendingGuideProfile', JSON.stringify({
             ...formData,
-            guideId: result.data.id
+            guideId: guide.id
           }));
           
-          // Dispatch custom event to notify guides page of update
-          window.dispatchEvent(new CustomEvent('guidesUpdated'));
+          // Dispatch multiple events to ensure guides page updates
+          setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('guidesUpdated'));
+            window.dispatchEvent(new CustomEvent('databaseUpdated', { 
+              detail: { type: 'guide_created', guideId: guide.id }
+            }));
+          }, 100);
           
           // Show success message and redirect
-          alert(`Congratulations! Your guide profile has been created and is now live in our directory. Profile ID: ${result.data.id}`);
-          router.push('/guide/profile-setup');
+          alert(`🎉 Congratulations! Your guide profile has been created successfully!\n\nProfile ID: ${guide.id}\nName: ${guide.name}\nLocation: ${guide.location}\n\nYour profile is now live in our guides directory and travelers can find and book you!`);
+          router.push('/guides'); // Redirect to guides page to see the new profile
         } else {
           alert(`Failed to create profile: ${result.error}`);
         }
