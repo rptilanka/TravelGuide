@@ -7,10 +7,20 @@ import Link from 'next/link';
 import { SupabaseGuideDB, SupabaseReviewDB } from '@/lib/database/supabase';
 import { Guide, Review } from '@/types';
 
+// Extended Guide interface for display purposes
+interface ExtendedGuide extends Guide {
+  certifications?: string[];
+  achievements?: string[];
+  gallery?: string[];
+  totalTours?: number;
+  responseTime?: string;
+  joinDate?: string;
+}
+
 export default function GuideProfilePage() {
   const params = useParams();
   const router = useRouter();
-  const [guide, setGuide] = useState<Guide | null>(null);
+  const [guide, setGuide] = useState<ExtendedGuide | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -39,7 +49,14 @@ export default function GuideProfilePage() {
         const reviewsResult = await SupabaseReviewDB.getReviewsByGuideId(guideId);
         if (reviewsResult.success && reviewsResult.data) {
           // Convert Supabase reviews to app format
-          const convertedReviews: Review[] = reviewsResult.data.map((review: any) => ({
+          const convertedReviews: Review[] = reviewsResult.data.map((review: {
+            id: string;
+            guide_id: string;
+            reviewer_name: string;
+            rating: number;
+            comment: string;
+            created_at: string;
+          }) => ({
             id: review.id,
             guideId: review.guide_id,
             userName: review.reviewer_name,
@@ -50,7 +67,7 @@ export default function GuideProfilePage() {
           }));
           setReviews(convertedReviews);
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error loading guide data:', err);
         setError('Failed to load guide data');
       } finally {
@@ -217,23 +234,27 @@ export default function GuideProfilePage() {
                       <div>
                         <h4 className="font-semibold text-gray-800 mb-2">Certifications</h4>
                         <ul className="space-y-1">
-                          {guide.certifications.map((cert, index) => (
+                          {guide.certifications?.map((cert: string, index: number) => (
                             <li key={index} className="flex items-center text-sm text-gray-600">
                               <span className="w-2 h-2 bg-blue-500 rounded-full mr-2"></span>
                               {cert}
                             </li>
-                          ))}
+                          )) || (
+                            <li className="text-sm text-gray-500">No certifications listed</li>
+                          )}
                         </ul>
                       </div>
                       <div>
                         <h4 className="font-semibold text-gray-800 mb-2">Achievements</h4>
                         <ul className="space-y-1">
-                          {guide.achievements.map((achievement, index) => (
+                          {guide.achievements?.map((achievement: string, index: number) => (
                             <li key={index} className="flex items-center text-sm text-gray-600">
                               <span className="text-yellow-500 mr-2">🏆</span>
                               {achievement}
                             </li>
-                          ))}
+                          )) || (
+                            <li className="text-sm text-gray-500">No achievements listed</li>
+                          )}
                         </ul>
                       </div>
                     </div>
@@ -243,7 +264,7 @@ export default function GuideProfilePage() {
                   <div>
                     <h3 className="text-xl font-bold text-gray-900 mb-3">Photo Gallery</h3>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {guide.gallery.map((photo, index) => (
+                      {guide.gallery?.map((photo: string, index: number) => (
                         <div key={index} className="aspect-square rounded-xl overflow-hidden">
                           <Image
                             src={photo}
@@ -253,7 +274,11 @@ export default function GuideProfilePage() {
                             className="w-full h-full object-cover hover:scale-105 transition-transform cursor-pointer"
                           />
                         </div>
-                      ))}
+                      )) || (
+                        <div className="col-span-full text-center text-gray-500 py-8">
+                          No photos available
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -353,15 +378,15 @@ export default function GuideProfilePage() {
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Total Tours</span>
-                        <span className="font-semibold">{guide.totalTours}</span>
+                        <span className="font-semibold">{guide.totalTours || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Response Time</span>
-                        <span className="font-semibold">{guide.responseTime}</span>
+                        <span className="font-semibold">{guide.responseTime || 'N/A'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-gray-600">Member Since</span>
-                        <span className="font-semibold">{guide.joinDate}</span>
+                        <span className="font-semibold">{guide.joinDate || 'N/A'}</span>
                       </div>
                     </div>
                   </div>

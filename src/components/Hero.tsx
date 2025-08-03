@@ -1,18 +1,45 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function Hero() {
   const [searchLocation, setSearchLocation] = useState('');
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Array of background images from your provided Unsplash photos
+  const backgroundImages = [
+    'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', // Group climbing beside seashore (Qx8_d5dGhrs)
+    'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', // Woman on sandy beach with palm trees (VqPOeYqzK-M)
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'  // Red and blue boat on beach at sunset (szpz0b1Q6IE)
+  ];
+
+  // Auto-rotate images every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        (prevIndex + 1) % backgroundImages.length
+      );
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [backgroundImages.length]);
+
+  // Preload images for smooth transitions
+  useEffect(() => {
+    backgroundImages.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
 
   return (
     <section className="relative text-white min-h-screen">
-      {/* Background Image */}
+      {/* Background Image with smooth transition */}
       <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-in-out"
         style={{
-          backgroundImage: 'url("https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80")'
+          backgroundImage: `url("${backgroundImages[currentImageIndex]}")`
         }}
       >
         {/* Dark overlay for better text readability */}
@@ -124,6 +151,22 @@ export default function Hero() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Image Navigation Dots */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
+          {backgroundImages.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentImageIndex(index)}
+              className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                index === currentImageIndex 
+                  ? 'bg-white scale-125' 
+                  : 'bg-white/50 hover:bg-white/75'
+              }`}
+              aria-label={`Switch to image ${index + 1}`}
+            />
+          ))}
         </div>
       </div>
     </section>

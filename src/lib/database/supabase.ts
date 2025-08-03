@@ -55,9 +55,9 @@ export class SupabaseGuideDB {
 
       const guides = data?.map(convertSupabaseGuide) || []
       return { success: true, data: guides }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error in getAllGuides:', error)
-      return { success: false, error: error.message }
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' }
     }
   }
 
@@ -77,9 +77,9 @@ export class SupabaseGuideDB {
 
       const guide = data ? convertSupabaseGuide(data) : null
       return { success: true, data: guide }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error in getGuideById:', error)
-      return { success: false, error: error.message }
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' }
     }
   }
 
@@ -104,9 +104,9 @@ export class SupabaseGuideDB {
 
       const guide = data ? convertSupabaseGuide(data) : null
       return { success: true, data: guide }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error in createGuide:', error)
-      return { success: false, error: error.message }
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' }
     }
   }
 
@@ -129,9 +129,9 @@ export class SupabaseGuideDB {
 
       const guide = data ? convertSupabaseGuide(data) : null
       return { success: true, data: guide }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error in updateGuide:', error)
-      return { success: false, error: error.message }
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' }
     }
   }
 
@@ -149,9 +149,9 @@ export class SupabaseGuideDB {
       }
 
       return { success: true }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error in deleteGuide:', error)
-      return { success: false, error: error.message }
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' }
     }
   }
 
@@ -206,9 +206,9 @@ export class SupabaseGuideDB {
 
       const guides = data?.map(convertSupabaseGuide) || []
       return { success: true, data: guides }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error in searchGuides:', error)
-      return { success: false, error: error.message }
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' }
     }
   }
 }
@@ -229,9 +229,9 @@ export class SupabaseReviewDB {
       }
 
       return { success: true, data: data || [] }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error in getReviewsByGuideId:', error)
-      return { success: false, error: error.message }
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' }
     }
   }
 
@@ -255,9 +255,9 @@ export class SupabaseReviewDB {
       }
 
       return { success: true, data }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error in createReview:', error)
-      return { success: false, error: error.message }
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' }
     }
   }
 }
@@ -302,9 +302,9 @@ export class SupabaseDatabaseUtils {
       }
 
       return { success: true }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error initializing tables:', error)
-      return { success: false, error: error.message }
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' }
     }
   }
 }

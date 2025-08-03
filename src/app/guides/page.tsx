@@ -176,7 +176,7 @@ export default function GuidesPage() {
     return () => clearTimeout(timeoutId);
   }, [filters, searchTerm, sortBy, guides]);
 
-  const updateFilter = (key: keyof SearchFilters, value: any) => {
+  const updateFilter = (key: keyof SearchFilters, value: string | number | boolean | undefined | { min?: number; max?: number }) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
@@ -453,7 +453,7 @@ export default function GuidesPage() {
             {/* Call to Action */}
             {!isLoading && filteredGuides.length > 0 && (
               <div className="mt-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center text-white">
-                <h3 className="text-2xl font-bold mb-4">Can't find the perfect guide?</h3>
+                <h3 className="text-2xl font-bold mb-4">Can&apos;t find the perfect guide?</h3>
                 <p className="text-blue-100 mb-6">
                   Join our community of local experts and share your knowledge with travelers
                 </p>
