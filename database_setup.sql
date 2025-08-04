@@ -19,6 +19,9 @@ CREATE TABLE IF NOT EXISTS guides (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- Disable Row Level Security for guides table (for development)
+ALTER TABLE guides DISABLE ROW LEVEL SECURITY;
+
 -- Create reviews table
 CREATE TABLE IF NOT EXISTS reviews (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -28,6 +31,9 @@ CREATE TABLE IF NOT EXISTS reviews (
   comment TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
+
+-- Disable Row Level Security for reviews table (for development)
+ALTER TABLE reviews DISABLE ROW LEVEL SECURITY;
 
 -- Create indexes for better performance
 CREATE INDEX IF NOT EXISTS idx_guides_location ON guides(location);

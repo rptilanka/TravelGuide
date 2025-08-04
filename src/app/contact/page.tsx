@@ -181,11 +181,11 @@ export default function ContactPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="relative text-white py-20">
         {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-600 to-teal-500">
+        <div className="absolute inset-0 bg-gradient-to-br from-gray-600 to-gray-800">
           <div className="absolute inset-0 bg-black bg-opacity-30"></div>
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

@@ -97,19 +97,17 @@ export default function Header() {
           <div className="hidden md:flex items-center space-x-3">
             <Link 
               href="/guide/signup" 
-              className={`relative px-6 py-3 font-semibold rounded-xl transition-all duration-300 group overflow-hidden ${
+              className={`relative px-6 py-3 font-semibold rounded-xl transition-all duration-300 group overflow-hidden shadow-lg ${
                 isScrolled 
-                  ? 'text-gray-700 hover:text-blue-600' 
-                  : 'text-white/90 hover:text-white'
+                  ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 shadow-blue-500/25' 
+                  : 'bg-gradient-to-r from-blue-500/80 to-blue-600/80 backdrop-blur-sm text-white border border-blue-400/30 hover:from-blue-500 hover:to-blue-600 shadow-blue-500/20'
               }`}
             >
               <span className="relative z-10">Become a Guide</span>
-              {/* Animated background */}
-              <div className={`absolute inset-0 transition-all duration-300 opacity-0 group-hover:opacity-100 ${
-                isScrolled 
-                  ? 'bg-gradient-to-r from-blue-50 to-purple-50' 
-                  : 'bg-gradient-to-r from-white/20 to-white/10 backdrop-blur-sm'
-              }`}></div>
+              {/* Shine effect */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 transform translate-x-[-100%] group-hover:translate-x-[200%] transition-transform duration-1000"></div>
+              </div>
             </Link>
             
             <Link 
@@ -185,10 +183,10 @@ export default function Header() {
               <div className="pt-4 space-y-3">
                 <Link
                   href="/guide/signup"
-                  className={`block px-4 py-3 rounded-xl font-semibold text-center transition-all duration-300 ${
+                  className={`block px-6 py-3 rounded-xl font-semibold text-center transition-all duration-300 shadow-lg ${
                     isScrolled 
-                      ? 'text-blue-600 hover:text-blue-700 hover:bg-blue-50' 
-                      : 'text-white/90 hover:text-white hover:bg-white/10 backdrop-blur-sm'
+                      ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700' 
+                      : 'bg-gradient-to-r from-blue-500/80 to-blue-600/80 backdrop-blur-sm text-white border border-blue-400/30 hover:from-blue-500 hover:to-blue-600'
                   }`}
                   onClick={() => setIsMenuOpen(false)}
                 >

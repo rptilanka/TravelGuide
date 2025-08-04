@@ -43,20 +43,31 @@ export class SupabaseGuideDB {
   // Get all guides
   static async getAllGuides() {
     try {
+      console.log('🔍 Attempting to fetch guides from Supabase...');
+      console.log('📍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+      
       const { data, error } = await supabase
         .from('guides')
         .select('*')
         .order('created_at', { ascending: false })
 
+      console.log('📊 Supabase response data:', data);
+      console.log('❌ Supabase response error:', error);
+      console.log('🔢 Data length:', data ? data.length : 'null');
+
       if (error) {
-        console.error('Error fetching guides:', error)
-        return { success: false, error: error.message }
+        console.error('❌ Error fetching guides:', error);
+        console.error('❌ Error details:', JSON.stringify(error, null, 2));
+        return { success: false, error: error.message || 'Unknown database error' }
       }
 
       const guides = data?.map(convertSupabaseGuide) || []
+      console.log('✅ Converted guides:', guides.length);
       return { success: true, data: guides }
     } catch (error: unknown) {
-      console.error('Error in getAllGuides:', error)
+      console.error('💥 Exception in getAllGuides:', error);
+      console.error('💥 Error type:', typeof error);
+      console.error('💥 Error details:', JSON.stringify(error, null, 2));
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' }
     }
   }
@@ -266,20 +277,32 @@ export class SupabaseDatabaseUtils {
   // Get database stats
   static async getStats() {
     try {
-      const { count: guideCount } = await supabase
+      console.log('📊 Getting database stats...');
+      
+      const { count: guideCount, error: guideError } = await supabase
         .from('guides')
         .select('*', { count: 'exact', head: true })
 
-      const { count: reviewCount } = await supabase
+      if (guideError) {
+        console.error('❌ Error getting guide count:', guideError);
+      }
+
+      const { count: reviewCount, error: reviewError } = await supabase
         .from('reviews')
         .select('*', { count: 'exact', head: true })
+
+      if (reviewError) {
+        console.error('❌ Error getting review count:', reviewError);
+      }
+
+      console.log('📊 Stats - Guides:', guideCount, 'Reviews:', reviewCount);
 
       return {
         totalGuides: guideCount || 0,
         totalReviews: reviewCount || 0
       }
     } catch (error) {
-      console.error('Error getting stats:', error)
+      console.error('💥 Error getting stats:', error);
       return {
         totalGuides: 0,
         totalReviews: 0
@@ -290,20 +313,35 @@ export class SupabaseDatabaseUtils {
   // Check if tables exist and create if needed
   static async initializeTables() {
     try {
-      // Check if guides table exists
-      const { error: guidesError } = await supabase
+      console.log('🔍 Checking database tables...');
+      
+      // Test basic connection first
+      const { data: connectionTest, error: connectionError } = await supabase
         .from('guides')
-        .select('id')
-        .limit(1)
+        .select('count')
+        .limit(0)
 
-      if (guidesError && guidesError.code === 'PGRST116') {
-        console.log('Tables need to be created. Please run the SQL setup script.')
-        return { success: false, error: 'Database tables not found. Please set up the database schema.' }
+      console.log('🔗 Connection test result:', { connectionTest, connectionError });
+
+      if (connectionError) {
+        console.error('❌ Connection error:', connectionError);
+        
+        if (connectionError.code === 'PGRST116') {
+          console.log('📋 Tables need to be created. Please run the SQL setup script.');
+          return { success: false, error: 'Database tables not found. Please set up the database schema using the SQL script in database_setup.sql' }
+        }
+
+        if (connectionError.code === '42P01') {
+          return { success: false, error: 'Table "guides" does not exist. Please run the database setup SQL script.' }
+        }
+
+        return { success: false, error: `Database error: ${connectionError.message} (Code: ${connectionError.code})` }
       }
 
+      console.log('✅ Database tables are accessible');
       return { success: true }
     } catch (error: unknown) {
-      console.error('Error initializing tables:', error)
+      console.error('💥 Error initializing tables:', error);
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error occurred' }
     }
   }

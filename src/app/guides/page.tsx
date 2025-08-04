@@ -198,7 +198,7 @@ export default function GuidesPage() {
   const hasActiveFilters = Object.keys(filters).length > 0 || searchTerm || sortBy !== 'featured';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">

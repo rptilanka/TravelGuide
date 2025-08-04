@@ -33,7 +33,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gray-50">
       <div className="flex min-h-screen">
         {/* Left Side - Form */}
         <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">

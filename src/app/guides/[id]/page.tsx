@@ -136,12 +136,12 @@ export default function GuideProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-8">
+    <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Hero Section */}
         <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden mb-8">
           {/* Cover Image */}
-          <div className="h-64 bg-gradient-to-r from-blue-600 to-teal-500 relative">
+          <div className="h-64 bg-gradient-to-r from-gray-600 to-gray-800 relative">
             <div className="absolute inset-0 bg-black/20"></div>
             <div className="absolute bottom-6 left-6 text-white">
               <h1 className="text-3xl font-bold">{guide.name}</h1>

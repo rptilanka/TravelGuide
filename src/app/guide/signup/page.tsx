@@ -185,7 +185,7 @@ export default function GuideSignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12">
+    <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -568,7 +568,7 @@ export default function GuideSignupPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="px-8 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition-colors animate-pulse-glow disabled:opacity-50"
+                    className="px-8 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors shadow-lg hover:shadow-xl disabled:opacity-50"
                   >
                     {isLoading ? 'Creating Account...' : 'Create Guide Account'}
                   </button>
