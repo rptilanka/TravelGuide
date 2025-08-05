@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 
 export default function SignInPage() {
-  const [userType, setUserType] = useState<'traveler' | 'guide'>('traveler');
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -28,7 +27,7 @@ export default function SignInPage() {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
     
-    console.log('Sign in attempt:', { userType, ...formData });
+    console.log('Sign in attempt:', formData);
     setIsLoading(false);
   };
 
@@ -47,32 +46,6 @@ export default function SignInPage() {
           <p className="mt-2 text-center text-sm text-gray-600">
             Sign in to your TravelGuide account
           </p>
-        </div>
-
-        {/* User Type Toggle */}
-        <div className="flex bg-gray-100 rounded-lg p-1">
-          <button
-            type="button"
-            onClick={() => setUserType('traveler')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
-              userType === 'traveler'
-                ? 'bg-white text-blue-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            I&apos;m a Traveler
-          </button>
-          <button
-            type="button"
-            onClick={() => setUserType('guide')}
-            className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
-              userType === 'guide'
-                ? 'bg-white text-blue-600 shadow-sm'
-                : 'text-gray-600 hover:text-gray-900'
-            }`}
-          >
-            I&apos;m a Guide
-          </button>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
