@@ -51,8 +51,8 @@ export default function DatabaseAdmin() {
         setGuides(guidesResult.data);
         console.log('Loaded guides:', guidesResult.data.length);
       } else {
-        console.error('Failed to load guides:', guidesResult.error);
-        setError(guidesResult.error || 'Failed to load guides');
+        console.error('Failed to load guides');
+        setError('Failed to load guides');
       }
       
       // Get database stats from Supabase

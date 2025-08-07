@@ -52,7 +52,7 @@ export default function GuidesPage() {
           setFilteredGuides(result.data);
           console.log(`Loaded ${result.data.length} guides from Supabase database`);
         } else {
-          console.error('Failed to load guides:', result.error);
+          console.error('Failed to load guides');
           setGuides([]);
           setFilteredGuides([]);
         }

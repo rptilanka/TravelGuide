@@ -30,17 +30,17 @@ export default function FeaturedGuides() {
           setError(null);
           
           // Handle warning message (when using fallback data)
-          if ((result as any).warning) {
-            setWarning((result as any).warning);
-            console.log('⚠️ Warning:', (result as any).warning);
+          if ('warning' in result && result.warning) {
+            setWarning(result.warning);
+            console.log('⚠️ Warning:', result.warning);
           } else {
             setWarning(null);
           }
           
           console.log('✅ Featured guides loaded successfully:', topGuides.length);
         } else {
-          console.warn('⚠️ Failed to load guides:', result.error);
-          setError(result.error || 'Failed to load guides');
+          console.warn('⚠️ Failed to load guides');
+          setError('Failed to load guides');
         }
       } catch (error) {
         console.error('💥 Error loading featured guides:', error);
@@ -80,7 +80,7 @@ export default function FeaturedGuides() {
               </div>
               <h3 className="text-lg font-semibold text-red-900 mb-2">Database Connection Issue</h3>
               <p className="text-red-700 mb-4">
-                Unable to load featured guides. This might be because the database tables haven't been set up yet.
+                Unable to load featured guides. This might be because the database tables haven&apos;t been set up yet.
               </p>
               <p className="text-sm text-red-600 mb-4">
                 Error: {error}

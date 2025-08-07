@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 
 export default function Hero() {
@@ -8,10 +8,10 @@ export default function Hero() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Array of background images from your provided Unsplash photos
-  const backgroundImages = [
+  const backgroundImages = useMemo(() => [
     'https://images.unsplash.com/photo-1544551763-46a013bb70d5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80', // Group climbing beside seashore (Qx8_d5dGhrs)
     'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80'  // Red and blue boat on beach at sunset (szpz0b1Q6IE)
-  ];
+  ], []);
 
   // Auto-rotate images every 5 seconds
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function Hero() {
       const img = new Image();
       img.src = src;
     });
-  }, []);
+  }, [backgroundImages]);
 
   return (
     <section className="relative text-white min-h-screen">

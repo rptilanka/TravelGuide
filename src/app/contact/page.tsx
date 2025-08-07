@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,25 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+
+  // Sri Lankan locations for contact page
+  const sriLankanLocations = [
+    {
+      url: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      title: 'Ancient Temples',
+      location: 'Anuradhapura, Sri Lanka'
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1605538883669-825200433431?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      title: 'Cultural Heritage',
+      location: 'Kandy, Sri Lanka'
+    },
+    {
+      url: 'https://images.unsplash.com/photo-1571847140471-1d7766e825ea?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      title: 'Sigiriya Rock',
+      location: 'Sigiriya, Sri Lanka'
+    }
+  ];
 
   const validateForm = () => {
     const newErrors: {[key: string]: string} = {};
@@ -107,118 +127,194 @@ export default function ContactPage() {
       icon: '📧',
       title: 'Email Us',
       description: 'Send us an email and we\'ll respond within 24 hours',
-      value: 'support@travelguide.com',
-      link: 'mailto:support@travelguide.com'
+      value: 'info@srilanka-travelguide.com',
+      link: 'mailto:info@srilanka-travelguide.com'
     },
     {
       icon: '📞',
       title: 'Call Us',
-      description: 'Speak with our support team directly',
-      value: '+1 (555) 123-4567',
-      link: 'tel:+15551234567'
+      description: 'Speak with our Sri Lankan support team directly',
+      value: '+94 11 234 5678',
+      link: 'tel:+94112345678'
     },
     {
       icon: '💬',
-      title: 'Live Chat',
-      description: 'Chat with us in real-time for immediate assistance',
-      value: 'Available 24/7',
-      link: '#'
+      title: 'WhatsApp',
+      description: 'Message us on WhatsApp for quick responses',
+      value: '+94 77 123 4567',
+      link: 'https://wa.me/94771234567'
     },
     {
       icon: '📍',
       title: 'Visit Us',
-      description: 'Come see us at our headquarters',
-      value: '123 Travel Street, Tourism City',
+      description: 'Come see us at our Colombo headquarters',
+      value: 'Galle Face, Colombo 03, Sri Lanka',
       link: '#'
     }
   ];
 
   const offices = [
     {
-      city: 'New York',
-      address: '123 Travel Street, Tourism City, NY 10001',
-      phone: '+1 (555) 123-4567',
-      email: 'ny@travelguide.com',
-      hours: 'Mon-Fri: 9AM-6PM EST'
-    },
-    {
-      city: 'London',
-      address: '456 Explorer Avenue, London, UK SW1A 1AA',
-      phone: '+44 20 7123 4567',
-      email: 'london@travelguide.com',
-      hours: 'Mon-Fri: 9AM-6PM GMT'
-    },
-    {
       city: 'Colombo',
-      address: '789 Heritage Road, Colombo 03, Sri Lanka',
+      region: 'Western Province',
+      address: '123 Galle Road, Colombo 03, Sri Lanka',
       phone: '+94 11 234 5678',
-      email: 'colombo@travelguide.com',
-      hours: 'Mon-Fri: 9AM-6PM IST'
+      email: 'colombo@srilanka-travelguide.com',
+      hours: 'Mon-Fri: 9AM-6PM IST',
+      image: 'https://images.unsplash.com/photo-1605538883669-825200433431?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
+    },
+    {
+      city: 'Kandy',
+      region: 'Central Province',
+      address: '456 Peradeniya Road, Kandy, Sri Lanka',
+      phone: '+94 81 234 5678',
+      email: 'kandy@srilanka-travelguide.com',
+      hours: 'Mon-Fri: 9AM-6PM IST',
+      image: 'https://images.unsplash.com/photo-1566552881560-0be862a7c445?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
+    },
+    {
+      city: 'Galle',
+      region: 'Southern Province',
+      address: '789 Fort Road, Galle Fort, Sri Lanka',
+      phone: '+94 91 234 5678',
+      email: 'galle@srilanka-travelguide.com',
+      hours: 'Mon-Fri: 9AM-6PM IST',
+      image: 'https://images.unsplash.com/photo-1582407947304-fd86f028f716?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80'
     }
   ];
 
   const faqs = [
     {
-      question: 'How do I book a guide?',
-      answer: 'You can browse our guides, select one that matches your preferences, and book directly through our platform. Payment is secured and you can communicate with your guide before your trip.'
+      question: 'How do I book a Sri Lankan guide?',
+      answer: 'You can browse our verified Sri Lankan guides, select one that matches your preferences for exploring specific regions, and book directly through our platform. Payment is secured and you can communicate with your guide before your Sri Lankan adventure.'
     },
     {
-      question: 'What if I need to cancel my booking?',
-      answer: 'Cancellation policies vary by guide, but most offer free cancellation up to 24-48 hours before your tour. Check the specific policy when booking.'
+      question: 'What Sri Lankan destinations do you cover?',
+      answer: 'We cover all 9 provinces of Sri Lanka including popular destinations like Sigiriya, Kandy, Galle, Ella, Yala National Park, Anuradhapura, and many hidden gems that only locals know about.'
     },
     {
-      question: 'Are all guides verified?',
-      answer: 'Yes, all guides go through a comprehensive verification process including background checks, local knowledge tests, and customer reviews.'
+      question: 'Are all Sri Lankan guides verified?',
+      answer: 'Yes, all our Sri Lankan guides go through a comprehensive verification process including background checks, local knowledge tests about Sri Lankan history and culture, and customer reviews.'
     },
     {
-      question: 'What payment methods do you accept?',
-      answer: 'We accept all major credit cards, PayPal, and local payment methods depending on your location.'
+      question: 'What languages do Sri Lankan guides speak?',
+      answer: 'Our guides speak Sinhala, Tamil, and English fluently. Many also speak additional languages like German, French, Russian, and Chinese to cater to international tourists.'
     },
     {
-      question: 'Can I communicate with my guide before the tour?',
-      answer: 'Absolutely! Once you book, you can message your guide directly through our platform to discuss your preferences and itinerary.'
+      question: 'What is the best time to visit Sri Lanka?',
+      answer: 'Sri Lanka has two monsoon seasons, so the best time depends on which region you want to visit. December to March is ideal for the west and south coasts, while May to September is better for the east coast and cultural triangle.'
+    },
+    {
+      question: 'Do you offer cultural and wildlife experiences?',
+      answer: 'Absolutely! Our guides specialize in various experiences including cultural heritage tours, wildlife safaris, tea plantation visits, beach excursions, adventure activities, and spiritual journeys to ancient temples.'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Hero Section */}
-      <section className="relative text-white py-20">
+    <div className="min-h-screen bg-white">
+      {/* Hero Section with Sri Lankan Temple Background */}
+      <section className="relative text-white py-24 overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-gray-600 to-gray-800">
-          <div className="absolute inset-0 bg-black bg-opacity-30"></div>
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat transform scale-105"
+          style={{
+            backgroundImage: 'url("https://images.unsplash.com/photo-1566552881560-0be862a7c445?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80")'
+          }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/70 via-purple-900/60 to-black/50"></div>
+          {/* Floating particles effect */}
+          <div className="absolute inset-0">
+            <div className="absolute top-20 left-20 w-2 h-2 bg-white rounded-full opacity-70 animate-pulse"></div>
+            <div className="absolute top-40 right-32 w-1 h-1 bg-blue-300 rounded-full opacity-80 animate-bounce"></div>
+            <div className="absolute bottom-32 left-1/4 w-1.5 h-1.5 bg-purple-300 rounded-full opacity-60 animate-pulse"></div>
+            <div className="absolute bottom-20 right-20 w-2 h-2 bg-white rounded-full opacity-50 animate-bounce"></div>
+          </div>
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Get in Touch
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto opacity-90">
-            Have questions? Need help planning your trip? We&apos;re here to assist you every step of the way.
-          </p>
+          <div className="animate-fade-in-up">
+            <h1 className="text-5xl md:text-7xl font-bold mb-8 bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent">
+              Contact Us
+            </h1>
+            <p className="text-xl md:text-2xl text-blue-100 max-w-4xl mx-auto leading-relaxed mb-8">
+              Ready to explore Sri Lanka? Have questions about our guides or need help planning your island adventure? 
+              We&apos;re here to assist you every step of the way.
+            </p>
+            <div className="flex justify-center space-x-4">
+              <div className="w-12 h-12 bg-white/20 rounded-full backdrop-blur-sm flex items-center justify-center">
+                🏛️
+              </div>
+              <div className="w-12 h-12 bg-white/20 rounded-full backdrop-blur-sm flex items-center justify-center">
+                🌴
+              </div>
+              <div className="w-12 h-12 bg-white/20 rounded-full backdrop-blur-sm flex items-center justify-center">
+                🐘
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Sri Lankan Locations Showcase */}
+      <section className="py-16 bg-gradient-to-br from-gray-50 to-blue-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Discover Sri Lanka with Us
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              From ancient temples to pristine beaches, let our local experts guide you through the Pearl of the Indian Ocean.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            {sriLankanLocations.map((location, index) => (
+              <div key={index} className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105">
+                <div className="aspect-[4/3] relative">
+                  <Image
+                    src={location.url}
+                    alt={location.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                  <div className="absolute bottom-4 left-4 right-4 text-white">
+                    <h3 className="text-xl font-bold mb-1">{location.title}</h3>
+                    <p className="text-blue-200 flex items-center">
+                      <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                      </svg>
+                      {location.location}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Contact Methods */}
-      <section className="py-16">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              How Can We Help?
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Get in Touch with Sri Lanka Experts
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Choose the best way to reach us based on your needs
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Our Sri Lankan team is ready to help you plan the perfect island adventure. 
+              Choose the best way to reach us.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {contactMethods.map((method, index) => (
-              <div key={index} className="bg-white rounded-xl shadow-lg p-6 text-center hover:shadow-xl transition-shadow">
-                <div className="text-4xl mb-4">{method.icon}</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">{method.title}</h3>
-                <p className="text-gray-600 mb-4">{method.description}</p>
+              <div key={index} className="group bg-white rounded-2xl shadow-lg p-8 text-center hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+                <div className="text-5xl mb-6 group-hover:animate-bounce">{method.icon}</div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{method.title}</h3>
+                <p className="text-gray-600 mb-4 leading-relaxed">{method.description}</p>
                 <a
                   href={method.link}
-                  className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                  className="inline-block px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full hover:from-blue-700 hover:to-purple-700 font-medium transition-all duration-300 transform hover:scale-105"
                 >
                   {method.value}
                 </a>
